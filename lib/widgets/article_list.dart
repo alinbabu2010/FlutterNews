@@ -11,84 +11,57 @@ import '../provider/news_state.dart';
 
 class ArticleList extends StatefulWidget {
   final List<Article> articles;
-  final Status? status;
+  final NewsState state;
 
-  const ArticleList({super.key, required this.articles, this.status});
+  const ArticleList({super.key, required this.articles, required this.state});
 
   @override
   State<ArticleList> createState() => _ArticleListState();
 }
 
 class _ArticleListState extends State<ArticleList> {
-  var _isLoadingMore = false;
-
-  void _getData({bool isRefresh = false}) {
-    Provider.of<NewsProvider>(context, listen: false)
-        .fetchData(isRefresh: isRefresh);
-  }
-
-  bool _scrollNotification(ScrollNotification scrollInfo) {
-    if (_isLoadingMore == false &&
-        scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-      _setLoadingState();
-      _getData();
-    }
-    return true;
-  }
-
-  _onRefresh() async {
-    if (_isLoadingMore == false) {
-      _getData(isRefresh: true);
-    }
-  }
-
-  _setLoadingState() {
-    setState(() {
-      _isLoadingMore = !_isLoadingMore;
-    });
-  }
+  final scrollController = ScrollController();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener(){
+    if (scrollController.position.maxScrollExtent ==
+        scrollController.position.pixels) {
+      if (!widget.state.isLoadMore) {
+        Provider.of<NewsProvider>(context, listen: false).fetchData();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: _scrollNotification,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await _onRefresh();
-              },
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: Dimens.listTopPadding),
-                itemBuilder: (context, index) {
-                  final article = index < widget.articles.length
-                      ? widget.articles[index]
-                      : null;
-                  return ArticleItem(article: article!);
-                },
-                itemCount: widget.articles.length,
-              ),
-            ),
-          ),
-        ),
-        if (widget.status == Status.loadMore) const ProgressBar(),
-        if (widget.status == Status.noMoreData)
-          const Center(
-              child: Text(
-            Constants.noMoreData,
-            style: TextStyle(
-              color: Colors.deepOrangeAccent,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          )),
-      ],
+    return ListView.builder(
+      controller: scrollController,
+      padding: const EdgeInsets.only(top: Dimens.listTopPadding),
+      itemBuilder: (context, index) {
+        final article =
+            index < widget.articles.length ? widget.articles[index] : null;
+        return article != null
+            ? ArticleItem(article: article)
+            : widget.state.isNoMoreData
+                ? const Center(
+                    child: Text(
+                    Constants.noMoreData,
+                    style: TextStyle(
+                      color: Colors.deepOrangeAccent,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ))
+                : const ProgressBar();
+      },
+      itemCount: widget.state.isLoadMore
+          ? widget.articles.length + 1
+          : widget.articles.length,
     );
   }
 }

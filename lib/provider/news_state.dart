@@ -17,6 +17,16 @@ class NewsState {
         articles: articles ?? this.articles,
         message: message ?? this.message,
       );
+
+  bool get isLoading => status == Status.loading;
+
+  bool get isError => status == Status.failure;
+
+  bool get isRefreshing => status == Status.refreshing;
+
+  bool get isLoadMore => status == Status.loadMore;
+
+  bool get isNoMoreData => status == Status.noMoreData;
 }
 
 enum Status { loading, refreshing, success, failure, loadMore, noMoreData }

@@ -9,8 +9,9 @@ class NewsProvider with ChangeNotifier {
   /// Current Page to get Data from API
   int _currentPage = 1;
 
-  /// Total Pages of Data from API
-  int _totalResults = 0;
+  /// Total Pages of Data from API.
+  //  Based on API restriction we can get only 90 results for time being
+  int _totalResults = 90;
 
   NewsState _newsState = NewsState(Status.loading);
 
@@ -54,7 +55,7 @@ class NewsProvider with ChangeNotifier {
       _articles.isEmpty || _articles.length < _totalResults;
 
   void _setParams(NewsResponse response, bool isRefresh) {
-    _totalResults = response.totalResults?.toInt() ?? 0;
+    //_totalResults = response.totalResults?.toInt() ?? 0;
     if (isRefresh) {
       _newsState = _newsState.copyWith(
           status: Status.success, articles: response.articles);

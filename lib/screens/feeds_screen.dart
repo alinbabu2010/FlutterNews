@@ -22,9 +22,16 @@ class _FeedScreenState extends State<FeedScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
+  Future<void> _onRefresh(bool isLoadingMore) async {
+    if (!isLoadingMore) {
+      Provider.of<NewsProvider>(context, listen: false)
+          .fetchData(isRefresh: true);
+    }
+  }
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     Provider.of<NewsProvider>(context, listen: false).fetchData();
   }
 
@@ -40,26 +47,28 @@ class _FeedScreenState extends State<FeedScreen> {
           final newsState = provider.newsState;
           if (newsState.status == Status.loading) {
             return const ProgressBar();
-          } else if (newsState.status == Status.failure) {
-            if (newsState.articles == null ||
-                newsState.articles?.isEmpty == true) {
-              final textTheme = Theme.of(context).textTheme.bodyLarge;
-              return Center(
-                child: Text(
-                  newsState.message!,
-                  style: textTheme?.copyWith(color: Colors.redAccent),
-                  textAlign: TextAlign.center,
-                ),
-              );
-            } else {
-              SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-                _showSnackBar(newsState.message!);
-              });
-            }
+          } else if (newsState.isError &&
+              newsState.articles?.isNotEmpty == true) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              _showSnackBar(newsState.message!);
+              return;
+            });
           }
-          return ArticleList(
-            articles: newsState.articles ?? [],
-            status: newsState.status,
+          final textTheme = Theme.of(context).textTheme.bodyLarge;
+          return RefreshIndicator(
+            onRefresh: () => _onRefresh(newsState.isLoadMore),
+            child: newsState.isError && newsState.articles?.isEmpty == true
+                ? Center(
+                    child: Text(
+                      newsState.message!,
+                      style: textTheme?.copyWith(color: Colors.redAccent),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : ArticleList(
+                    articles: newsState.articles ?? [],
+                    state: newsState,
+                  ),
           );
         },
       ),
