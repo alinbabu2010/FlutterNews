@@ -55,7 +55,7 @@ class _ArticleListState extends State<ArticleList> {
                   )
                 : const ProgressBar();
       },
-      itemCount: widget.state.isLoadMore
+      itemCount: widget.state.isLoadMore || widget.state.isNoMoreData
           ? widget.articles.length + 1
           : widget.articles.length,
     );
