@@ -24,7 +24,7 @@ class ArticleItem extends StatelessWidget {
           ),
           tileColor: Colors.amberAccent,
           leading: Hero(
-            tag: Constants.heroTag,
+            tag: article.publishedAt ?? Constants.heroTag,
             child: CircleAvatar(
               radius: Dimens.itemAvatarRadius,
               foregroundImage: article.urlToImage != null
