@@ -30,7 +30,7 @@ class NewsProvider with ChangeNotifier {
     }
     notifyListeners();
     try {
-      if (!_isLoadMoreAvailable) {
+      if (!_isLoadMoreAvailable && !isRefresh) {
         _newsState = _newsState.copyWith(status: Status.noMoreData);
       } else {
         final response = await NetworkDataSource().fetchNews(_currentPage);

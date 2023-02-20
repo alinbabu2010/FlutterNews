@@ -23,7 +23,7 @@ class _FeedScreenState extends State<FeedScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _onRefresh(bool isLoadingMore) async {
+  _onRefresh(bool isLoadingMore) async {
     if (!isLoadingMore) {
       Provider.of<NewsProvider>(context, listen: false)
           .fetchData(isRefresh: true);
@@ -56,7 +56,9 @@ class _FeedScreenState extends State<FeedScreen> {
             });
           }
           return RefreshIndicator(
-            onRefresh: () => _onRefresh(newsState.isLoadMore),
+            onRefresh: () async {
+              await _onRefresh(newsState.isLoadMore);
+            },
             child: newsState.isError && newsState.articles?.isEmpty == true
                 ? EmptyMsgWidget(
                     message: newsState.message!,
