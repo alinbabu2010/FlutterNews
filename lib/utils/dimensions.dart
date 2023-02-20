@@ -12,4 +12,13 @@ class Dimens {
   // ArticleList
   static const listTopPadding = 8.0;
 
+  // ArticleInfo
+  static const titleSpacing = 5.0;
+
+  // DetailScreen
+  static const contentBorderRadius = 25.0;
+  static const contentPadding = 16.0;
+  static const imageHeightPercentage = 0.6;
+  static const contentMarginPercentage = 0.55;
+  static const spacingHeight = 12.0;
 }
