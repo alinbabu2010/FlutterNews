@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_news/screens/detail_screen.dart';
 import 'package:flutter_news/utils/constants.dart';
 import 'package:flutter_news/utils/dimensions.dart';
 
@@ -46,6 +47,13 @@ class ArticleItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           isThreeLine: true,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => DetailScreen(article: article),
+                  fullscreenDialog: true),
+            );
+          },
         ),
       ),
     );
