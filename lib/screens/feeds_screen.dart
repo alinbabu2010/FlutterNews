@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_news/utils/constants.dart';
 import 'package:flutter_news/widgets/article_list.dart';
+import 'package:flutter_news/widgets/error_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/news_provider.dart';
@@ -54,16 +55,12 @@ class _FeedScreenState extends State<FeedScreen> {
               return;
             });
           }
-          final textTheme = Theme.of(context).textTheme.bodyLarge;
           return RefreshIndicator(
             onRefresh: () => _onRefresh(newsState.isLoadMore),
             child: newsState.isError && newsState.articles?.isEmpty == true
-                ? Center(
-                    child: Text(
-                      newsState.message!,
-                      style: textTheme?.copyWith(color: Colors.redAccent),
-                      textAlign: TextAlign.center,
-                    ),
+                ? EmptyMsgWidget(
+                    message: newsState.message!,
+                    isScrollNeeded: true,
                   )
                 : ArticleList(
                     articles: newsState.articles ?? [],

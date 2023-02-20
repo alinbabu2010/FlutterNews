@@ -4,6 +4,7 @@ import 'package:flutter_news/provider/news_provider.dart';
 import 'package:flutter_news/utils/constants.dart';
 import 'package:flutter_news/utils/dimensions.dart';
 import 'package:flutter_news/widgets/article_item.dart';
+import 'package:flutter_news/widgets/error_widget.dart';
 import 'package:flutter_news/widgets/progress_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,7 @@ class _ArticleListState extends State<ArticleList> {
     scrollController.addListener(_scrollListener);
   }
 
-  void _scrollListener(){
+  void _scrollListener() {
     if (scrollController.position.maxScrollExtent ==
         scrollController.position.pixels) {
       if (!widget.state.isLoadMore) {
@@ -48,15 +49,10 @@ class _ArticleListState extends State<ArticleList> {
         return article != null
             ? ArticleItem(article: article)
             : widget.state.isNoMoreData
-                ? const Center(
-                    child: Text(
-                    Constants.noMoreData,
-                    style: TextStyle(
-                      color: Colors.deepOrangeAccent,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ))
+                ? const EmptyMsgWidget(
+                    message: Constants.noMoreData,
+                    isScrollNeeded: false,
+                  )
                 : const ProgressBar();
       },
       itemCount: widget.state.isLoadMore

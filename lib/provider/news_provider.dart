@@ -11,7 +11,7 @@ class NewsProvider with ChangeNotifier {
 
   /// Total Pages of Data from API.
   //  Based on API restriction we can get only 90 results for time being
-  int _totalResults = 90;
+  final int _totalResults = 90;
 
   NewsState _newsState = NewsState(Status.loading);
 
@@ -48,7 +48,6 @@ class NewsProvider with ChangeNotifier {
   void _resetParams() {
     _currentPage = 1;
     _newsState = _newsState.copyWith(status: Status.refreshing);
-    _totalResults = 0;
   }
 
   bool get _isLoadMoreAvailable =>
