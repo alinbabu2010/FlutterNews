@@ -31,12 +31,6 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    Provider.of<NewsProvider>(context, listen: false).fetchData();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

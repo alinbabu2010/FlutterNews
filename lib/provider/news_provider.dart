@@ -13,6 +13,10 @@ class NewsProvider with ChangeNotifier {
   //  Based on API restriction we can get only 90 results for time being
   final int _totalResults = 90;
 
+  NewsProvider() {
+    fetchData();
+  }
+
   NewsState _newsState = NewsState(Status.loading);
 
   NewsState get newsState => _newsState;
