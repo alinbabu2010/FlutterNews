@@ -26,9 +26,7 @@ class NewsProvider with ChangeNotifier {
   void fetchData({bool isRefresh = false}) async {
     if (!isRefresh) {
       _newsState = _newsState.copyWith(
-          status: _newsState.status == Status.loading
-              ? _newsState.status
-              : Status.loadMore);
+          status: _newsState.isLoading ? _newsState.status : Status.loadMore);
     } else {
       _resetParams();
     }
