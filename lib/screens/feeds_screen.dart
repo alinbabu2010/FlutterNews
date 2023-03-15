@@ -23,9 +23,9 @@ class _FeedScreenState extends State<FeedScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  _onRefresh(bool isLoadingMore) async {
+  Future<void> _onRefresh(bool isLoadingMore) async {
     if (!isLoadingMore) {
-      Provider.of<NewsProvider>(context, listen: false)
+      await Provider.of<NewsProvider>(context, listen: false)
           .fetchData(isRefresh: true);
     }
   }

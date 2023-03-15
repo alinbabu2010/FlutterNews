@@ -23,7 +23,7 @@ class NewsProvider with ChangeNotifier {
 
   List<Article> get _articles => _newsState.articles ?? List.empty();
 
-  void fetchData({bool isRefresh = false}) async {
+  Future<void> fetchData({bool isRefresh = false}) async {
     if (!isRefresh) {
       _newsState = _newsState.copyWith(
           status: _newsState.isLoading ? _newsState.status : Status.loadMore);
