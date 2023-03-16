@@ -7,7 +7,7 @@ import '../data/models/articles.dart';
 
 class NewsProvider with ChangeNotifier {
   /// Current Page to get Data from API
-  int _currentPage = 1;
+  int _page = 1;
 
   /// Total Pages of Data from API.
   //  Based on API restriction we can get only 90 results for time being
@@ -27,6 +27,7 @@ class NewsProvider with ChangeNotifier {
     if (!isRefresh) {
       _newsState = _newsState.copyWith(
           status: _newsState.isLoading ? _newsState.status : Status.loadMore);
+      _page++;
     } else {
       _resetParams();
     }
@@ -35,7 +36,7 @@ class NewsProvider with ChangeNotifier {
       if (!_isLoadMoreAvailable && !isRefresh) {
         _newsState = _newsState.copyWith(status: Status.noMoreData);
       } else {
-        final response = await NetworkDataSource().fetchNews(_currentPage);
+        final response = await NetworkDataSource().fetchNews(_page);
         _setParams(response, isRefresh);
       }
     } on Exception catch (exception) {
@@ -48,7 +49,7 @@ class NewsProvider with ChangeNotifier {
   }
 
   void _resetParams() {
-    _currentPage = 1;
+    _page = 1;
     _newsState = _newsState.copyWith(status: Status.refreshing);
   }
 
@@ -57,14 +58,12 @@ class NewsProvider with ChangeNotifier {
 
   void _setParams(NewsResponse response, bool isRefresh) {
     //_totalResults = response.totalResults?.toInt() ?? 0;
-    if (isRefresh) {
-      _newsState = _newsState.copyWith(
-          status: Status.success, articles: response.articles);
+    if (isRefresh || _page == 1) {
+      _newsState = NewsState(Status.success, articles: response.articles);
     } else {
       _newsState = _newsState.copyWith(
           status: Status.success, articles: _getArticles(response));
     }
-    _currentPage++;
   }
 
   List<Article>? _getArticles(NewsResponse response) {
